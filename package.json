@@ -3,6 +3,81 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "// ===== Development Scripts =====": "",
+
+    "dev": "yarn nx run-many --target=serve --projects=web,server --parallel=2",
+    "dev:web": "yarn nx serve web",
+    "dev:server": "yarn nx serve server",
+    "dev:server:debug": "yarn nx serve server --inspect",
+
+    "// ===== Build Scripts =====": "",
+
+    "build": "yarn nx run-many --target=build --projects=web,server --parallel=2",
+    "build:web": "yarn nx build web",
+    "build:server": "yarn nx build server",
+    "build:prod": "yarn nx run-many --target=build --projects=web,server --configuration=production",
+    "build:affected": "yarn nx affected --target=build",
+
+    "// ===== Testing Scripts =====": "",
+
+    "test": "yarn nx run-many --target=test --all",
+    "test:server": "yarn nx test server",
+    "test:server:watch": "yarn nx test server --watch",
+    "test:server:coverage": "yarn nx test server --coverage",
+    "test:web": "yarn nx test web",
+    "test:web:watch": "yarn nx test web --watch",
+    "test:affected": "yarn nx affected --target=test",
+
+    "// ===== E2E Testing Scripts =====": "",
+
+    "e2e": "yarn nx run-many --target=e2e --all",
+    "e2e:server": "yarn nx e2e server-e2e",
+    "e2e:web": "yarn nx e2e web-e2e",
+    "e2e:affected": "yarn nx affected --target=e2e",
+
+    "// ===== Linting & Type Checking =====": "",
+
+    "lint": "yarn nx run-many --target=lint --all",
+    "lint:server": "yarn nx lint server",
+    "lint:web": "yarn nx lint web",
+    "lint:fix": "yarn nx run-many --target=lint --all --fix",
+    "typecheck": "yarn nx run-many --target=typecheck --all",
+
+    "// ===== Production Scripts =====": "",
+
+    "start:prod": "node dist/apps/server/main.js",
+    "start:server": "node dist/apps/server/main.js",
+    "preview:web": "yarn nx run web:preview",
+
+    "// ===== Database Scripts =====": "",
+
+    "db:seed": "yarn nx run server:seed",
+    "db:migrate": "yarn nx run server:migrate",
+    "db:reset": "yarn nx run server:db-reset",
+
+    "// ===== Utility Scripts =====": "",
+
+    "clean": "yarn nx reset && rm -rf dist node_modules",
+    "clean:cache": "yarn nx reset",
+    "graph": "yarn nx graph",
+    "affected:graph": "yarn nx affected:graph",
+    "format": "yarn nx format:write",
+    "format:check": "yarn nx format:check",
+
+    "// ===== CI/CD Scripts =====": "",
+
+    "ci:build": "yarn nx affected --target=build --base=origin/main --parallel=3",
+    "ci:test": "yarn nx affected --target=test --base=origin/main --parallel=3 --ci --code-coverage",
+    "ci:e2e": "yarn nx affected --target=e2e --base=origin/main --parallel=1",
+    "ci:lint": "yarn nx affected --target=lint --base=origin/main",
+
+    "// ===== Deployment Scripts =====": "",
+
+    "deploy:server": "yarn build:server && pm2 restart cv-builder-server",
+    "deploy:web": "yarn build:web && yarn deploy:web:static",
+    "predeploy": "yarn build:prod && yarn test && yarn lint"
+  },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@nx/devkit": "22.3.3",

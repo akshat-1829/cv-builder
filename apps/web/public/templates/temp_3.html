@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Professional Resume Template</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Calibri:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Calibri", Arial, sans-serif;
+        background: #f5f5f5;
+        padding: 30px;
+        line-height: 1.5;
+      }
+      .resume-container {
+        max-width: 850px;
+        margin: 0 auto;
+        background: white;
+        padding: 50px 60px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      /* Header */
+      .header {
+        text-align: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #333;
+      }
+      .name {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+      }
+      .contact-info {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        font-size: 12px;
+        color: #333;
+        flex-wrap: wrap;
+      }
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      /* Sections */
+      .section {
+        margin-bottom: 25px;
+      }
+      .section-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+      }
+      /* Professional Summary */
+      .summary-content {
+        font-size: 11.5px;
+        line-height: 1.6;
+        color: #333;
+        text-align: justify;
+      }
+      .summary-content ul {
+        list-style-position: outside;
+        margin-left: 20px;
+      }
+      .summary-content li {
+        margin-bottom: 8px;
+      }
+      /* Experience */
+      .experience-item {
+        margin-bottom: 20px;
+      }
+      .experience-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+      }
+      .company-info {
+        flex: 1;
+      }
+      .company-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 2px;
+      }
+      .job-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: #333;
+        font-style: italic;
+      }
+      .location-date {
+        text-align: right;
+        font-size: 11px;
+        color: #555;
+      }
+      .location {
+        font-weight: 600;
+      }
+      .date-range {
+        font-style: italic;
+      }
+      .responsibilities {
+        list-style-position: outside;
+        margin-left: 25px;
+        font-size: 11px;
+        line-height: 1.6;
+      }
+      .responsibilities li {
+        margin-bottom: 8px;
+        color: #333;
+      }
+      /* Projects */
+      .project-item {
+        margin-bottom: 15px;
+      }
+      .project-header {
+        font-size: 12px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 5px;
+      }
+      .project-tech {
+        font-weight: 600;
+        color: #444;
+      }
+      .project-desc {
+        font-size: 11px;
+        line-height: 1.6;
+        color: #333;
+        text-align: justify;
+      }
+      /* Education */
+      .education-item {
+        margin-bottom: 15px;
+      }
+      .education-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 5px;
+      }
+      .university-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1a1a1a;
+      }
+      .degree {
+        font-size: 12px;
+        font-weight: 600;
+        color: #333;
+      }
+      .cgpa {
+        font-size: 11px;
+        color: #555;
+      }
+      /* Skills */
+      .skills-content {
+        font-size: 11px;
+        line-height: 1.6;
+      }
+      .skill-category {
+        margin-bottom: 10px;
+      }
+      .skill-label {
+        font-weight: 700;
+        color: #1a1a1a;
+      }
+      .skill-list {
+        display: inline;
+        color: #333;
+      }
+      /* Bullet styling */
+      ul {
+        list-style-type: disc;
+      }
+      ul ul {
+        list-style-type: circle;
+        margin-left: 20px;
+      }
+      @media print {
+        body {
+          background: white;
+          padding: 0;
+        }
+        .resume-container {
+          box-shadow: none;
+          padding: 30px;
+        }
+      }
+      @media (max-width: 768px) {
+        .resume-container {
+          padding: 30px 20px;
+        }
+        .experience-header,
+        .education-header {
+          flex-direction: column;
+        }
+        .location-date {
+          text-align: left;
+          margin-top: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="resume-container">
+      <!-- Header -->
+      <header class="header">
+        <h1 class="name" id="candidateName">Akshat Kumar Mishra</h1>
+        <div class="contact-info">
+          <div class="contact-item">
+            <strong>Email:</strong>
+            <span id="email">akshatmishra.9177@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <strong>Mobile:</strong> <span id="mobile">+91 8770843055</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Professional Summary -->
+      <section class="section">
+        <h2 class="section-title">Professional Summary</h2>
+        <div class="summary-content">
+          <ul id="summaryList">
+            <li>
+              Ambitious Software Engineer & Full-Stack Developer with 2+ years
+              of experience building scalable, performance-oriented, and
+              mobile-first applications using ReactJS, Angular, Node.js, and
+              Django. Specialized in client-side rendering, reusable components,
+              and optimized UI architecture.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Experience -->
+      <section class="section">
+        <h2 class="section-title">Experience</h2>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <div class="company-info">
+              <div class="company-name" id="company1">
+                Amenses Innovation Pvt. Ltd.
+              </div>
+              <div class="job-title" id="jobTitle1">Senior Web Developer</div>
+            </div>
+            <div class="location-date">
+              <div class="location" id="location1">Indore, M.P.</div>
+              <div class="date-range" id="dates1">Jun 2023 – Present</div>
+            </div>
+          </div>
+          <ul class="responsibilities" id="resp1">
+            <li>
+              <strong>Frontend Engineering:</strong> Built highly responsive web
+              interfaces using React Js and Angular. Improved performance by 40%
+              and reduced bounce rate by 25%.
+            </li>
+            <li>
+              <strong>Greenfield Ownership:</strong> Delivered scalable
+              components and frontend flows for new product lines, enabling
+              rapid, business-oriented MVP iteration.
+            </li>
+            <li>
+              <strong>Architecture & Scale:</strong> Developed multiple software
+              with multi-tenant systems supporting 10,000+ users across devices
+              with 99.9% uptime.
+            </li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <div class="experience-header">
+            <div class="company-info">
+              <div class="company-name" id="company2">Edvak Inc.</div>
+              <div class="job-title" id="jobTitle2">SDE Intern</div>
+            </div>
+            <div class="location-date">
+              <div class="location" id="location2">Remote</div>
+              <div class="date-range" id="dates2">Jun 2022 – May 2023</div>
+            </div>
+          </div>
+          <ul class="responsibilities" id="resp2">
+            <li>
+              <strong>UX Engineering:</strong> Built responsive scheduling and
+              EHR UIs. Reduced user errors by 30% through thoughtful interface
+              design.
+            </li>
+            <li>
+              <strong>API Development:</strong> Created and tested REST APIs
+              supporting patient and scheduling services.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Projects -->
+      <section class="section">
+        <h2 class="section-title">Projects</h2>
+
+        <div class="project-item">
+          <div class="project-header">
+            <span class="project-tech" id="projName1">EasyMB.in:</span> Next.js
+            14, Express.js, MongoDB, AWS (EC2, S3), CashFree
+          </div>
+          <p class="project-desc" id="projDesc1">
+            Built from scratch as a responsive technical-manual platform with
+            50+ repair guides; implemented CSR, route-based code-splitting, and
+            AWS S3 hosting to optimize load times for 1,000+ monthly users.
+          </p>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <span class="project-tech" id="projName2">7VowsWed:</span> Next.js
+            13, Express.js, MongoDB, Razorpay, AWS
+          </div>
+          <p class="project-desc" id="projDesc2">
+            Designed and developed a complete wedding event-management system
+            including venues, vendor discovery, bookings, and payments with a
+            responsive, mobile-first UI.
+          </p>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <span class="project-tech" id="projName3">VOffis–Payroll:</span>
+            Angular 17, Django, PostgreSQL, AWS S3
+          </div>
+          <p class="project-desc" id="projDesc3">
+            Engineered pragmatic solutions for payroll micro-service as part of
+            a modular HR platform; integrated form validation and role-based UI
+            components.
+          </p>
+        </div>
+      </section>
+
+      <!-- Education -->
+      <section class="section">
+        <h2 class="section-title">Education</h2>
+
+        <div class="education-item">
+          <div class="education-header">
+            <div>
+              <div class="university-name" id="university1">
+                Symbiosis University of Applied Sciences
+              </div>
+              <div class="degree" id="degree1">
+                B.Tech in Computer Science & Information Technology
+              </div>
+            </div>
+            <div class="location-datre">
+              <div class="location" id="eduLocation1">Indore, M.P.</div>
+              <div class="cgpa" id="cgpa1">CGPA: 8.98</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Skills -->
+      <section class="section">
+        <h2 class="section-title">Skills</h2>
+        <div class="skills-content">
+          <div class="skill-category">
+            <span class="skill-label">Hard Skills:</span>
+            <span class="skill-list" id="hardSkills"
+              >JavaScript, TypeScript, React Js, Angular, Next.js, Node.js,
+              Express.js, NestJS, Django, REST APIs, Redux, RxJS, Tailwind CSS,
+              Material UI, MongoDB, PostgreSQL, MySQL, AWS (EC2, S3, Lambda),
+              Docker, GitHub Actions, CI/CD, JWT, OAuth 2.0</span
+            >
+          </div>
+          <div class="skill-category">
+            <span class="skill-label">Soft Skills:</span>
+            <span class="skill-list" id="softSkills"
+              >Problem-solving mindset, Effective cross-team communication, High
+              ownership and accountability, Adaptability in agile environments,
+              Creative thinking, User Interface/User Experience empathy, Time
+              management, Collaboration under pressure</span
+            >
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

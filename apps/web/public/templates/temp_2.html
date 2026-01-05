@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CV Template - Suzanne Kate</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Montserrat", sans-serif;
+        background: #4a7c9e;
+        padding: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .cv-container {
+        width: 850px;
+        background: #faf8f3;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        position: relative;
+      }
+      /* Header */
+      .header {
+        padding: 50px 50px 30px;
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        position: relative;
+      }
+      .touch-text {
+        position: absolute;
+        top: 20px;
+        right: 50px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #333;
+      }
+      .profile-img {
+        width: 130px;
+        height: 130px;
+        border-radius: 25px;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
+      .header-text {
+        flex: 1;
+      }
+      .name {
+        font-size: 40px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 5px;
+        letter-spacing: -1px;
+      }
+      .job-title {
+        font-size: 20px;
+        font-weight: 400;
+        color: #333;
+        letter-spacing: 0.5px;
+      }
+      /* Main Content */
+      .content {
+        display: flex;
+        padding: 0 50px 80px;
+        gap: 40px;
+        position: relative;
+      }
+      .content::before {
+        content: "";
+        position: absolute;
+        left: 35%;
+        top: 0;
+        bottom: 80px;
+        width: 1px;
+        background: #333;
+      }
+      .left-column {
+        width: 35%;
+        padding-right: 40px;
+      }
+      .right-column {
+        flex: 1;
+      }
+      .section {
+        margin-bottom: 35px;
+      }
+      .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+        position: relative;
+        padding-bottom: 8px;
+      }
+      .section-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: #333;
+      }
+      /* Contact */
+      .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 10px;
+        font-size: 11px;
+        line-height: 1.4;
+      }
+      .contact-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      /* Profile Text */
+      .profile-text {
+        font-size: 10px;
+        line-height: 1.6;
+        color: #333;
+        text-align: justify;
+      }
+      /* Skills List */
+      .skills-list {
+        list-style: none;
+        font-size: 11px;
+      }
+      .skills-list li {
+        margin-bottom: 6px;
+        padding-left: 15px;
+        position: relative;
+        line-height: 1.4;
+      }
+      .skills-list li::before {
+        content: "♦";
+        position: absolute;
+        left: 0;
+        font-size: 8px;
+        color: #333;
+      }
+      /* Languages */
+      .lang-item {
+        font-size: 11px;
+        margin-bottom: 8px;
+        line-height: 1.4;
+      }
+      .lang-name {
+        font-weight: 600;
+      }
+      .lang-level {
+        font-weight: 400;
+        color: #555;
+      }
+      /* Interests */
+      .interests-list {
+        list-style: none;
+        font-size: 11px;
+      }
+      .interests-list li {
+        margin-bottom: 6px;
+        padding-left: 15px;
+        position: relative;
+      }
+      .interests-list li::before {
+        content: "♦";
+        position: absolute;
+        left: 0;
+        font-size: 8px;
+      }
+      /* Social */
+      .social-item {
+        margin-bottom: 10px;
+        font-size: 11px;
+      }
+      .social-platform {
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+      .social-link {
+        color: #333;
+        text-decoration: none;
+        font-size: 10px;
+      }
+      /* Entry Styles */
+      .entry {
+        margin-bottom: 25px;
+      }
+      .entry-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 5px;
+      }
+      .entry-company {
+        font-size: 11px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+      }
+      .entry-dates {
+        font-size: 10px;
+        color: #666;
+        margin-bottom: 8px;
+      }
+      .entry-desc {
+        font-size: 10px;
+        line-height: 1.6;
+        color: #333;
+        text-align: justify;
+      }
+      /* Hire Me Seal */
+      .hire-seal {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+      }
+      .hire-circle {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+      }
+      .hire-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1a1a;
+        line-height: 1.2;
+      }
+      .curved-text {
+        font-size: 9px;
+        font-weight: 400;
+        color: #666;
+      }
+      .top-curve {
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .bottom-curve {
+        position: absolute;
+        bottom: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .hire-lines {
+        position: absolute;
+        width: 200px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .hire-lines::before,
+      .hire-lines::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 100px;
+        height: 1px;
+        background: #333;
+      }
+      .hire-lines::before {
+        left: -130px;
+      }
+      .hire-lines::after {
+        right: -130px;
+      }
+      @media print {
+        body {
+          background: white;
+          padding: 0;
+        }
+        .cv-container {
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cv-container">
+      <!-- Header -->
+      <header class="header">
+        <!-- <div class="touch-text">Just Get in Touch :)</div> -->
+        <img
+          src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHVzZXJ8ZW58MHx8MHx8fDA%3D"
+          alt="Profile"
+          class="profile-img"
+          id="profileImg"
+        />
+        <div class="header-text">
+          <h1 class="name" id="basicName">Suzanne Katey</h1>
+          <p class="job-title" id="basicJob">Graphic Designer</p>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <div class="content">
+        <!-- Left Column -->
+        <aside class="left-column">
+          <!-- Contact -->
+          <section class="section">
+            <h3 class="section-title">Contact</h3>
+            <div class="contact-item">
+              <svg
+                class="contact-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
+                />
+              </svg>
+              <span id="basicPhone">+2 434-232-534234</span>
+            </div>
+            <div class="contact-item">
+              <svg
+                class="contact-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+              <span id="basicEmail">Suzanne@Katey.com</span>
+            </div>
+            <div class="contact-item">
+              <svg
+                class="contact-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path
+                  d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                />
+              </svg>
+              <span id="basicWebsite">suzannekatey.com</span>
+            </div>
+            <div class="contact-item">
+              <svg
+                class="contact-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span id="basicAddress">Katey street # 52</span>
+            </div>
+          </section>
+
+          <!-- Profile -->
+          <section class="section">
+            <h3 class="section-title">Profile</h3>
+            <p class="profile-text" id="introPara">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
+              aliquam orci a ex molestie, eu ornare odio scelerisque. Nam eu
+              metus fringilla, volutpat metus in, consequat nunc. Vivamus ut
+              pharetra nisl, a porttitor tortor. Morbi erat risus, porttitor nec
+              ipsum in, iaculis auctor.
+            </p>
+          </section>
+
+          <!-- Skills -->
+          <section class="section">
+            <h3 class="section-title">Skills</h3>
+            <ul class="skills-list" id="skillsList">
+              <li>Graphic Design</li>
+              <li>Design Thinking</li>
+              <li>Management</li>
+              <li>Innovation</li>
+              <li>3D Modelling</li>
+              <li>Photography</li>
+              <li>Marketing</li>
+            </ul>
+          </section>
+
+          <!-- Languages -->
+          <section class="section">
+            <h3 class="section-title">Languages</h3>
+            <div class="lang-item">
+              <span class="lang-name">English</span> -
+              <span class="lang-level">Native</span>
+            </div>
+            <div class="lang-item">
+              <span class="lang-name">Spanish</span> -
+              <span class="lang-level">Professional</span>
+            </div>
+            <div class="lang-item">
+              <span class="lang-name">Italian</span> -
+              <span class="lang-level">Professional</span>
+            </div>
+            <div class="lang-item">
+              <span class="lang-name">French</span> -
+              <span class="lang-level">Elementary</span>
+            </div>
+          </section>
+
+          <!-- Interests -->
+          <section class="section">
+            <h3 class="section-title">Interests</h3>
+            <ul class="interests-list" id="interestsList">
+              <li>Photography</li>
+              <li>Travel</li>
+              <li>Digital Art</li>
+              <li>Reading</li>
+            </ul>
+          </section>
+
+          <!-- Social Profiles -->
+          <section class="section">
+            <h3 class="section-title">Social</h3>
+            <div class="social-item">
+              <div class="social-platform">LinkedIn</div>
+              <a href="#" class="social-link" id="linkedin"
+                >linkedin.com/in/suzanne</a
+              >
+            </div>
+            <div class="social-item">
+              <div class="social-platform">Twitter</div>
+              <a href="#" class="social-link" id="twitter"
+                >twitter.com/suzanne</a
+              >
+            </div>
+          </section>
+        </aside>
+
+        <!-- Right Column -->
+        <main class="right-column">
+          <!-- Experience -->
+          <section class="section">
+            <h3 class="section-title">Experience</h3>
+            <div class="entry">
+              <h4 class="entry-title" id="expTitle1">Your Job Title</h4>
+              <div class="entry-company" id="expCompany1">
+                Company name / City
+              </div>
+              <div class="entry-dates" id="expDates1">2019 - Present</div>
+              <p class="entry-desc" id="expDesc1">
+                Lorem ipsum dolor sit amet consectet gelit. It ellentesque
+                eleife ornare ipsum.
+              </p>
+            </div>
+            <div class="entry">
+              <h4 class="entry-title" id="expTitle2">Your Job Title</h4>
+              <div class="entry-company" id="expCompany2">
+                Company name / City
+              </div>
+              <div class="entry-dates" id="expDates2">2019 - Present</div>
+              <p class="entry-desc" id="expDesc2">
+                Lorem ipsum dolor sit amet consectet gelit. It ellentesque
+                eleife ornare ipsum.
+              </p>
+            </div>
+            <div class="entry">
+              <h4 class="entry-title" id="expTitle3">Your Job Title</h4>
+              <div class="entry-company" id="expCompany3">
+                Company name / City
+              </div>
+              <div class="entry-dates" id="expDates3">2019 - Present</div>
+              <p class="entry-desc" id="expDesc3">
+                Lorem ipsum dolor sit amet consectet gelit. It ellentesque
+                eleife ornare ipsum.
+              </p>
+            </div>
+          </section>
+
+          <!-- Education -->
+          <section class="section">
+            <h3 class="section-title">Education</h3>
+            <div class="entry">
+              <h4 class="entry-title" id="eduDegree1">Degree Name</h4>
+              <div class="entry-company" id="eduUniversity1">
+                University / City
+              </div>
+              <div class="entry-dates" id="eduDates1">2019 - Present</div>
+              <p class="entry-desc" id="eduDesc1">
+                Lorem ipsum dolor sit amet consectet gelit. It ellentesque
+                eleife ornare ipsum.
+              </p>
+            </div>
+            <div class="entry">
+              <h4 class="entry-title" id="eduDegree2">Degree Name</h4>
+              <div class="entry-company" id="eduUniversity2">
+                University / City
+              </div>
+              <div class="entry-dates" id="eduDates2">2019 - Present</div>
+              <p class="entry-desc" id="eduDesc2">
+                Lorem ipsum dolor sit amet consectet gelit. It ellentesque
+                eleife ornare ipsum.
+              </p>
+            </div>
+            <div class="entry">
+              <h4 class="entry-title" id="eduDegree3">Degree Name</h4>
+              <div class="entry-company" id="eduUniversity3">
+                University / City
+              </div>
+              <div class="entry-dates" id="eduDates3">2019 - Present</div>
+              <p class="entry-desc" id="eduDesc3">
+                Lorem ipsum dolor sit amet consectet gelit. It ellentesque
+                eleife ornare ipsum.
+              </p>
+            </div>
+          </section>
+
+          <!-- Projects -->
+          <section class="section">
+            <h3 class="section-title">Projects</h3>
+            <div class="entry">
+              <h4 class="entry-title" id="projTitle1">Project Title</h4>
+              <div class="entry-company" id="projMeta1">
+                Team: 5 | Duration: 6 months | Tech: Figma, PS
+              </div>
+              <p class="entry-desc" id="projDesc1">
+                Lorem ipsum dolor sit amet consectet gelit. It ellentesque
+                eleife ornare ipsum.
+              </p>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <!-- Hire Me Seal -->
+      <!-- <div class="hire-seal">
+        <div class="hire-circle">
+          <div class="top-curve curved-text">Lorem ipsum dolor</div>
+          <div class="hire-text">Hire<br />me!</div>
+          <div class="bottom-curve curved-text">Lorem ipsum dolor</div>
+          <div class="hire-lines"></div>
+        </div>
+      </div> -->
+    </div>
+  </body>
+</html>

@@ -7,6 +7,7 @@ import { WithAuth } from '../../hocs/withAuth';
 import AppLayout from '../../layout/AppLayout';
 import ExploreCVsPage from '../../pages/ExploreCVs';
 import AboutUs from '../../pages/AboutUs';
+import CVEditor from '../../pages/CvEditor';
 
 const protectedRoutes = [
   {
@@ -20,15 +21,25 @@ const protectedRoutes = [
     isProtected: false,
   },
   {
+    route: '/register',
+    component: <Login />,
+    isProtected: false,
+  },
+  {
     route: '/explore-cvs',
     component: <ExploreCVsPage />,
     isProtected: false,
   },
   {
-    route:'/about-us',
+    route: '/about-us',
     component: <AboutUs />,
     isProtected: false,
-  }
+  },
+  {
+    route: '/editor',
+    component: <CVEditor />,
+    isProtected: false,
+  },
 ];
 
 const AppRouter: FC = () => {
@@ -43,7 +54,7 @@ const AppRouter: FC = () => {
           element={
             isProtected ? (
               <WithAuth>{component}</WithAuth>
-            ) : route === '/login' || route === '/signup' ? (
+            ) : route === '/login' || route === '/register' ? (
               component
             ) : (
               <AppLayout>{component}</AppLayout>

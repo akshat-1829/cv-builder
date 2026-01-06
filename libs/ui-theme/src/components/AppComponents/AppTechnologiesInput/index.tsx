@@ -2,7 +2,7 @@
 
 import React, { useState, KeyboardEvent, ChangeEvent, FocusEvent } from 'react';
 import { Box, Chip } from '@mui/material';
-import { TextField } from '../../TextFiled';
+import { TextField } from '../../MuiComponents/TextFiled';
 
 interface TechnologiesInputProps {
   name: string;

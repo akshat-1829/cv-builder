@@ -74,7 +74,7 @@ const CVFormContainer: React.FC<CVFormContainerProps> = ({
 
   return (
     <Container maxWidth="lg">
-      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+      <Paper elevation={3} sx={{ p: 4, my: 4 }}>
         <Formik
           initialValues={initialValues}
           validationSchema={cvFormValidationSchema}

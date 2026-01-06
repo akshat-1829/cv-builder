@@ -1,7 +1,7 @@
 // pages/templates/index.tsx or components/templates/TemplateSelector.tsx
 
 import React from 'react';
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, Stack } from '@mui/material';
 import { AppTemplates } from '@cv-builder/ui-theme';
 
 interface Template {
@@ -14,21 +14,21 @@ interface Template {
 
 const templates: Template[] = [
   {
-    id: 'template-1',
+    id: 'temp_1',
     name: 'Template 1',
     imagePath: '/assets/template_1.png',
     description: 'Professional design with modern layout',
     isPremium: false,
   },
   {
-    id: 'template-2',
+    id: 'temp_2',
     name: 'Template 2',
     imagePath: '/assets/template_2.png',
     description: 'Clean and minimal style',
     isPremium: false,
   },
   {
-    id: 'template-3',
+    id: 'temp_3',
     name: 'Template 3',
     imagePath: '/assets/template_3.png',
     description: 'Creative design with color accents',
@@ -38,13 +38,16 @@ const templates: Template[] = [
 
 export const TemplateSelection: React.FC = () => {
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container
+      maxWidth={false}
+      sx={{ backgroundColor: 'secondary.light', p: 4 }}
+    >
       {/* Header */}
       <Box
         sx={{
           mb: 4,
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'center',
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: 2,
@@ -55,11 +58,12 @@ export const TemplateSelection: React.FC = () => {
             variant="h4"
             component="h1"
             fontWeight="bold"
+            textAlign="center"
             gutterBottom
           >
-            Choose a Template
+            Our Most Popular Templates
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" color="text.secondary" textAlign="center">
             Select a template to start building your CV
           </Typography>
         </Box>
@@ -78,8 +82,10 @@ export const TemplateSelection: React.FC = () => {
           </ToggleButton>
         </ToggleButtonGroup> */}
       </Box>
-
-      <AppTemplates templates={templates} />
+      
+      <Stack spacing={4} width="100%" alignItems="center">
+        <AppTemplates templates={templates} />
+      </Stack>
     </Container>
   );
 };

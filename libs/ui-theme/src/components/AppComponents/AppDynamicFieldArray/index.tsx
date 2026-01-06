@@ -6,7 +6,7 @@ import { Box, Grid, IconButton, Divider, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { v4 as uuidv4 } from 'uuid';
-import { Button } from '../../Button';
+import { Button } from '../../MuiComponents/Button';
 
 interface DynamicFieldArrayProps<T> {
   name: string;

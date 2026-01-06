@@ -113,6 +113,7 @@ console.log(`🚀 Port: ${config.port}`);
 console.log(`🔗 Base URL: ${config.baseUrl}`);
 console.log(`🎯 Client URL: ${config.client.url}`);
 console.log(`💰 Payment: ${config.payment.currency} ${config.payment.amount}`);
+
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
 export default config;

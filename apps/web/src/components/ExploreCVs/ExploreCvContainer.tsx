@@ -13,21 +13,21 @@ interface Template {
 
 const templates: Template[] = [
   {
-    id: 'template-1',
+    id: 'temp_1',
     name: 'Template 1',
     imagePath: '/assets/template_1.png',
     description: 'Professional design with modern layout and clean structure',
     isPremium: false,
   },
   {
-    id: 'template-2',
+    id: 'temp_2',
     name: 'Template 2',
     imagePath: '/assets/template_2.png',
     description: 'Elegant and minimal style perfect for any industry',
     isPremium: false,
   },
   {
-    id: 'template-3',
+    id: 'temp_3',
     name: 'Template 3',
     imagePath: '/assets/template_3.png',
     description: 'Creative design with vibrant colors and modern aesthetics',

@@ -1,15 +1,9 @@
 import {
   Box,
   Grid,
-  Paper,
-  Typography,
-  Divider,
-  IconButton,
   useTheme,
-  useMediaQuery,
   // Alert,
 } from '@mui/material';
-import { useState } from 'react';
 import LoginImageSection from './LoginImageSection';
 import LoginSignupFormSection from './LoginSignupFormSection';
 

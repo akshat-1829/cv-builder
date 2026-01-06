@@ -62,7 +62,7 @@ const CTASection: React.FC = () => {
           </Box>
           <Box
             component={Link}
-            to="/explore"
+            to="/explore-cvs"
             sx={{
               px: 4,
               py: 1.5,

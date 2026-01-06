@@ -45,7 +45,7 @@ export const createServer = (): Application => {
     legacyHeaders: false,
   });
 
-  app.use('/api/', limiter);
+  app.use('/api', limiter);
   console.log(
     `✅ Rate limiting: ${config.rateLimit.maxRequests} requests per ${config.rateLimit.windowMs / 1000}s`,
   );

@@ -13,8 +13,9 @@ import LoginSignupTabs from './LoginSignupTab';
 import { useState } from 'react';
 
 const LoginSignupFormSection = () => {
+  const pathName = window.location.pathname;
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(pathName === '/register' ? 1 : 0);
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };

@@ -1,3 +1,4 @@
+<!-- public/templates/template_1.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,11 +8,14 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 20px;
-        background-color: #f5f5f0;
+        /* margin: 0; */
+        /* padding: 20px; */
+        background-color: white;
         color: #333;
         line-height: 1.4;
+        margin: 0 auto;
+        overflow: hidden;
+        width: '100%';
       }
       .cv-container {
         max-width: 850px;
@@ -39,27 +43,12 @@
         font-size: 28px;
         margin: 0 0 5px;
       }
-      .basic-job {
-        font-size: 18px;
-        margin: 0 0 10px;
-      }
       .basic-contact {
         display: flex;
         justify-content: center;
         gap: 20px;
         flex-wrap: wrap;
         font-size: 14px;
-      }
-      .hire-seal {
-        position: absolute;
-        bottom: -20px;
-        right: 20px;
-        background: #0d9488;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 50px;
-        font-weight: bold;
-        transform: rotate(-15deg);
       }
       .content {
         display: flex;
@@ -118,6 +107,7 @@
       .profile-para {
         font-style: italic;
         margin-top: 10px;
+        line-height: 1.6;
       }
       .skill-item {
         margin-bottom: 12px;
@@ -142,32 +132,25 @@
         padding: 0;
       }
       .social-item {
-        display: flex;
-        justify-content: space-between;
         margin-bottom: 8px;
       }
-      .social-link {
+      .social-platform {
+        font-weight: bold;
         color: #0d9488;
+      }
+      .social-link {
+        color: #333;
         text-decoration: none;
+        word-break: break-all;
       }
       .social-link:hover {
         text-decoration: underline;
       }
-      .interests-list {
-        list-style: none;
-        padding: 0;
-      }
-      .interests-list li {
-        padding: 5px 0;
-        position: relative;
-        padding-left: 20px;
-      }
-      .interests-list li::before {
-        content: "•";
-        color: #0d9488;
-        font-weight: bold;
-        position: absolute;
-        left: 0;
+      .empty-state {
+        color: #999;
+        font-style: italic;
+        text-align: center;
+        padding: 10px;
       }
       @media (max-width: 768px) {
         .content {
@@ -182,137 +165,71 @@
           gap: 5px;
         }
       }
+      @media print {
+        body {
+          background: white;
+          padding: 0;
+        }
+        .cv-container {
+          box-shadow: none;
+        }
+      }
     </style>
   </head>
   <body>
-    <div class="cv-container">
-      <!-- 1. Basic Details -->
+    <!-- <div class="cv-container"> -->
+      <!-- Header -->
       <header class="header">
-        <img src="profile.jpg" alt="Profile Image" class="profile-img" />
-        <h1 class="basic-name" id="basicName">Suzanne Kate</h1>
-        <p class="basic-job" id="basicJob">Graphic Designer</p>
+        <img src="{{image}}" alt="Profile Image" class="profile-img" style="display: {{imageDisplay}};" />
+        <h1 class="basic-name">{{fullName}}</h1>
         <div class="basic-contact">
-          <span id="basicEmail">email@example.com</span>
-          <span id="basicPhone">+1-234-567-890</span>
-          <span id="basicAddress">123 Street, City, State 12345</span>
+          <span>📧 {{email}}</span>
+          <span>📱 {{phone}}</span>
+          <span>📍 {{city}}, {{state}}</span>
         </div>
-        <!-- <div class="hire-seal">HIRE ME!</div> -->
       </header>
 
       <div class="content">
         <aside class="left-column">
-          <!-- 1. Introductory Paragraph in Profile -->
+          <!-- Profile -->
           <section class="section">
             <h3>Profile</h3>
-            <p class="profile-para" id="introPara">
-              Dynamic graphic designer passionate about creating visually
-              stunning experiences. Expertise in modern design tools and
-              collaborative projects.
-            </p>
+            <p class="profile-para">{{summary}}</p>
           </section>
 
-          <!-- 5. Skills -->
+          <!-- Skills -->
           <section class="section">
             <h3>Skills</h3>
-            <div class="skill-item">
-              <span class="skill-name">Graphic Design</span>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: 90%"></div>
-              </div>
-            </div>
-            <div class="skill-item">
-              <span class="skill-name">3D Modeling</span>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: 85%"></div>
-              </div>
-            </div>
-            <!-- Add more dynamically -->
+            <div id="skillsContainer">{{skills}}</div>
           </section>
 
-          <!-- Interests Section -->
-          <section class="section">
-            <h3>Interests</h3>
-            <ul class="interests-list" id="interestsList">
-              <li>Photography</li>
-              <li>Traveling</li>
-              <li>Digital Art</li>
-              <li>Hiking</li>
-            </ul>
-          </section>
-
-          <!-- 6. Social Profiles -->
+          <!-- Social Profiles -->
           <section class="section">
             <h3>Social Profiles</h3>
-            <ul class="social-list">
-              <li class="social-item">
-                <span>LinkedIn</span
-                ><a href="#" class="social-link" id="linkedin"
-                  >linkedin.com/in/username</a
-                >
-              </li>
-              <li class="social-item">
-                <span>Twitter</span
-                ><a href="#" class="social-link" id="twitter"
-                  >twitter.com/username</a
-                >
-              </li>
-              <!-- Add more dynamically -->
-            </ul>
+            <div id="socialContainer">{{socialProfiles}}</div>
           </section>
         </aside>
 
         <main class="right-column">
-          <!-- 2. Education -->
+          <!-- Education -->
           <section class="section">
             <h3>Education</h3>
-            <div class="entry">
-              <p class="entry-title" id="eduDegree1">Bachelor of Design</p>
-              <p class="entry-subtitle" id="eduInstitution1">
-                Design University
-              </p>
-              <p class="entry-meta" id="eduPercentage1">
-                Percentage/CGPA: 85% | 2017-2021
-              </p>
-            </div>
-            <!-- Add more dynamically -->
+            <div id="educationContainer">{{education}}</div>
           </section>
 
-          <!-- 3. Experience -->
+          <!-- Experience -->
           <section class="section">
             <h3>Experience</h3>
-            <div class="entry">
-              <p class="entry-title" id="expPosition1">
-                Senior Graphic Designer
-              </p>
-              <p class="entry-subtitle" id="expOrg1">ABC Design Studio</p>
-              <p class="entry-meta" id="expDetails1">
-                Location: Mumbai | CTC: $60k | Jan 2022 - Present |
-                Technologies: Adobe Suite, Figma
-              </p>
-              <p class="entry-desc" id="expDesc1">
-                Led design projects for major clients.
-              </p>
-            </div>
-            <!-- Add more dynamically -->
+            <div id="experienceContainer">{{experience}}</div>
           </section>
 
-          <!-- 4. Projects -->
+          <!-- Projects -->
           <section class="section">
             <h3>Projects</h3>
-            <div class="entry">
-              <p class="entry-title" id="projTitle1">Brand Redesign Project</p>
-              <p class="entry-meta" id="projDetails1">
-                Team Size: 5 | Duration: 6 months | Technologies: Photoshop,
-                Illustrator
-              </p>
-              <p class="entry-desc" id="projDesc1">
-                Revamped branding for a startup, increasing engagement by 40%.
-              </p>
-            </div>
-            <!-- Add more dynamically -->
+            <div id="projectsContainer">{{projects}}</div>
           </section>
         </main>
       </div>
-    </div>
+    <!-- </div> -->
   </body>
 </html>

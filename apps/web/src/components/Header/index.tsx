@@ -17,10 +17,11 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useState } from 'react';
 import { useScrollTrigger } from '@mui/material';
 import { AppBarHeader, HeaderToolbar } from '@cv-builder/ui-theme';
+import { Link } from 'react-router-dom';
 
 const navItems = [
   { label: 'Home', path: '/' },
-  { label: 'About Us', path: '/about' },
+  { label: 'About Us', path: '/about-us' },
   { label: 'Explore CVs', path: '/explore-cvs' },
 ];
 
@@ -54,20 +55,19 @@ const AppHeader = () => {
     setAnchorUser(null);
   };
 
-  const handleNavigate = (path: string) => {
-    console.log('navigate to', path);
-    handleCloseNavMenu();
-  };
-
   const whiteColor = theme.palette.common.white;
   const transparentText = alpha(whiteColor, 0.9);
   const transparentSecondary = alpha(whiteColor, 0.8);
 
   return (
-    <AppBarHeader position="static" isScrolled={isScrolled}>
+    <AppBarHeader
+      position="static"
+      isScrolled={isScrolled}
+
+    >
       <HeaderToolbar>
         {/* 1. Logo - Fixed colors */}
-        <Box display="flex" alignItems="center" gap={1.5}>
+        <Box display="flex" alignItems="center" gap={1.5} sx={{maxWidth:'100vw'}}>
           <Box
             sx={{
               width: 32,
@@ -109,8 +109,8 @@ const AppHeader = () => {
             {navItems.map((item) => (
               <Box
                 key={item.path}
-                component="button"
-                onClick={() => handleNavigate(item.path)}
+                component={Link}
+                to={item.path}
                 sx={{
                   p: 1.5,
                   borderRadius: 2,
@@ -155,11 +155,24 @@ const AppHeader = () => {
                 transformOrigin={{ vertical: 'top', horizontal: 'left' }}
               >
                 {navItems.map((item) => (
-                  <MenuItem
-                    key={item.path}
-                    onClick={() => handleNavigate(item.path)}
-                  >
-                    {item.label}
+                  <MenuItem key={item.path}>
+                    <Box
+                      component={Link}
+                      to={item.path}
+                      sx={{
+                        bgcolor: 'common.white',
+                        color: 'text.primary',
+                        borderRadius: 2,
+                        // fontWeight: 600,
+                        textDecoration: 'none',
+                        display: 'inline-block',
+                        '&:hover': {
+                          bgcolor: 'background.default',
+                        },
+                      }}
+                    >
+                      {item.label}
+                    </Box>
                   </MenuItem>
                 ))}
               </Menu>
@@ -217,7 +230,7 @@ const AppHeader = () => {
                 >
                   John Doe
                 </Typography>
-                <Typography
+                {/* <Typography
                   variant="caption"
                   sx={{
                     color: isScrolled ? 'text.secondary' : transparentSecondary,
@@ -225,7 +238,7 @@ const AppHeader = () => {
                   }}
                 >
                   Free plan
-                </Typography>
+                </Typography> */}
               </Box>
             )}
             <KeyboardArrowDownIcon
@@ -243,12 +256,30 @@ const AppHeader = () => {
             onClose={handleCloseUserMenu}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            sx={{width:'100%'}}
           >
-            <MenuItem>Profile</MenuItem>
-            <MenuItem>My CVs</MenuItem>
-            <MenuItem>Billing</MenuItem>
-            <Divider />
-            <MenuItem>Logout</MenuItem>
+            {/* <MenuItem>Profile</MenuItem> */}
+            {/* <MenuItem>Billing</MenuItem> */}
+            {/* <Divider /> */}
+            <MenuItem>
+              <Box
+                component={Link}
+                to="/login"
+                sx={{
+                  bgcolor: 'common.white',
+                  color: 'text.primary',
+                  borderRadius: 2,
+                  // fontWeight: 600,
+                  textDecoration: 'none',
+                  display: 'inline-block',
+                  '&:hover': {
+                    bgcolor: 'background.default',
+                  },
+                }}
+              >
+                Logout
+              </Box>
+            </MenuItem>
           </Menu>
         </Box>
       </HeaderToolbar>

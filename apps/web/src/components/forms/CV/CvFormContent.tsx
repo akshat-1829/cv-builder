@@ -52,15 +52,15 @@ const CVFormContent: React.FC<CVFormContentProps> = ({ onDirtyChange }) => {
   };
 
   const handleNextClick = async () => {
-    const validationErrors = await validateForm();
-    const currentStepErrors = getCurrentStepErrors(
-      activeStep,
-      validationErrors,
-    );
+    // const validationErrors = await validateForm();
+    // const currentStepErrors = getCurrentStepErrors(
+    //   activeStep,
+    //   validationErrors,
+    // );
 
-    if (Object.keys(currentStepErrors).length === 0) {
+    // if (Object.keys(currentStepErrors).length === 0) {
       handleNext();
-    }
+    // }
   };
 
   const getStepContent = (step: number) => {
@@ -113,9 +113,9 @@ const CVFormContent: React.FC<CVFormContentProps> = ({ onDirtyChange }) => {
         />
       </Box>
 
-      <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+      <Stepper activeStep={activeStep} sx={{ mb: 4 }} >
         {steps.map((label) => (
-          <Step key={label}>
+          <Step key={label} onClick={() => setActiveStep(steps.indexOf(label))} sx={{ cursor: 'pointer' }}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}

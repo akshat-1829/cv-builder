@@ -2,7 +2,7 @@ import { Container, Box, Typography, Divider, Grid } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppTemplatePreviewCard } from '../AppTemplatePreviewCard';
-import { Button } from '../../Button';
+import { Button } from '../../MuiComponents/Button';
 
 interface Template {
   id: string;
@@ -30,7 +30,7 @@ export const AppTemplates = ({ templates }: TemplateProps) => {
 
   const handleContinue = () => {
     if (selectedTemplate) {
-      navigate(`/cv/create?template=${selectedTemplate}`);
+      navigate(`/editor?template=${selectedTemplate}`);
     }
   };
   return (

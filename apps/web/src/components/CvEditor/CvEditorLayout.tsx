@@ -1,7 +1,7 @@
 // src/components/editor/CVEditorLayout.tsx
 
 import React, { useEffect } from 'react';
-import { Box, useMediaQuery, useTheme } from '@mui/material';
+import { Box, useMediaQuery, useTheme, Typography } from '@mui/material';
 import { useFormikContext } from 'formik';
 import { CVData } from '@cv-builder/shared-types';
 import CvTemplatePreview from './CvTemplatePreview';
@@ -28,9 +28,6 @@ const CVEditorLayout: React.FC<CVEditorLayoutProps> = ({
     onDirtyChange(dirty);
   }, [dirty, onDirtyChange]);
 
-  console.log('=== CVEditorLayout Render ===');
-  console.log('Values from context:', values);
-
   return (
     <Box sx={{ display: 'flex', height: '100%', overflow: 'hidden' }}>
       {/* Left Panel - Form */}
@@ -44,7 +41,10 @@ const CVEditorLayout: React.FC<CVEditorLayoutProps> = ({
           borderColor: 'divider',
         }}
       >
-        <CVFormContainer onSubmit={submitForm} />
+        <CVFormContainer
+          onSubmit={submitForm}
+          // onStepChange={() => {}}
+        />
       </Box>
 
       {/* Right Panel - Template Preview */}
@@ -57,6 +57,18 @@ const CVEditorLayout: React.FC<CVEditorLayoutProps> = ({
           p: { xs: 2, md: 3 },
         }}
       >
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+          }}
+        >
+          <Typography variant="h6" component="h2">
+            Preview
+          </Typography>
+        </Box>
         <CvTemplatePreview templateId={templateId} data={values} />
       </Box>
     </Box>

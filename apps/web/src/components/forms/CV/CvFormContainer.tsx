@@ -1,53 +1,21 @@
 // components/CVForm/CVFormContainer.tsx
 
 import React, { useState, useEffect } from 'react';
-import { Formik } from 'formik';
-import { Paper, Container } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
-import { CVData } from '@cv-builder/shared-types';
+import { Paper, Container, useMediaQuery, useTheme } from '@mui/material';
 import CVFormContent from './CvFormContent';
-import { cvFormValidationSchema } from '@cv-builder/shared-utils';
 
 interface CVFormContainerProps {
-  initialData?: CVData;
-  onSubmit: (data: CVData) => Promise<void>;
+  onSubmit: (data: any) => Promise<void>;
+  onStepChange?: () => void;
 }
 
 const CVFormContainer: React.FC<CVFormContainerProps> = ({
-  initialData,
   onSubmit,
+  onStepChange,
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-
-  const initialValues: CVData = initialData || {
-    title: '',
-    basicDetails: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      address: '',
-      city: '',
-      state: '',
-      pincode: '',
-      summary: '',
-      image: '',
-    },
-    education: [
-      {
-        id: uuidv4(),
-        degree: '',
-        institution: '',
-        percentage: 0,
-        startDate: '',
-        endDate: '',
-      },
-    ],
-    experience: [],
-    projects: [],
-    skills: [],
-    socialProfiles: [],
-  };
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -62,29 +30,23 @@ const CVFormContainer: React.FC<CVFormContainerProps> = ({
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasUnsavedChanges]);
 
-  const handleSubmit = async (values: CVData) => {
-    try {
-      await onSubmit(values);
-      setHasUnsavedChanges(false);
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      throw error;
-    }
-  };
-
   return (
     <Container maxWidth="lg">
-      <Paper elevation={3} sx={{ p: 4, my: 4 }}>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={cvFormValidationSchema}
-          onSubmit={handleSubmit}
-          validateOnChange={true}
-          validateOnBlur={true}
-          enableReinitialize
-        >
-          <CVFormContent onDirtyChange={setHasUnsavedChanges} />
-        </Formik>
+      <Paper
+        elevation={2}
+        sx={{
+          p: isMobile ? '20px' : '32px',
+          my: isMobile ? '16px' : '24px',
+          overflow: 'hidden',
+          borderRadius: '8px',
+          backgroundColor: '#fff',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+        }}
+      >
+        <CVFormContent
+          onDirtyChange={setHasUnsavedChanges}
+          // onStepChange={onStepChange}
+        />
       </Paper>
     </Container>
   );

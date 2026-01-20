@@ -4,6 +4,9 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import config from './config/environment.config';
 import { connectDatabase } from './db/connection';
+import authRoutes from "./route/auth.routes";
+import cvRoutes from "./route/cv.routes";
+import paymentRoutes from "./route/payment.routes";
 
 /**
  * Create Express Application
@@ -24,12 +27,7 @@ export const createServer = (): Application => {
 
   // CORS configuration
   app.use(
-    cors({
-      origin: config.cors.origin,
-      credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-    }),
+    cors(),
   );
   console.log('✅ CORS configured for:', config.cors.origin);
 
@@ -51,7 +49,7 @@ export const createServer = (): Application => {
   );
 
   // Health check endpoint
-  app.get('/health', (req: Request, res: Response) => {
+  app.get('/api/health', (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       status: 'healthy',
@@ -60,7 +58,12 @@ export const createServer = (): Application => {
       uptime: process.uptime(),
     });
   });
-  console.log('✅ Health check endpoint: GET /health');
+  console.log('✅ Health check endpoint: GET /api/health');
+
+  app.use('/api/auth', authRoutes);
+  app.use('/api/cv', cvRoutes);
+  app.use('/api/payment', paymentRoutes);
+  console.log('✅ API routes configured under /api');
 
   // 404 handler for undefined routes
   app.use((req: Request, res: Response) => {
@@ -89,6 +92,8 @@ export const createServer = (): Application => {
   });
 
   console.log('✅ Error handling middleware configured');
+
+  // app.use('/api', routes);
 
   return app;
 };

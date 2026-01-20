@@ -8,6 +8,8 @@ import AppLayout from '../../layout/AppLayout';
 import ExploreCVsPage from '../../pages/ExploreCVs';
 import AboutUs from '../../pages/AboutUs';
 import CVEditor from '../../pages/CvEditor';
+import AuthError from '../Auth/AuthError';
+import AuthCallback from '../Auth/AuthCallback';
 
 const protectedRoutes = [
   {
@@ -39,6 +41,14 @@ const protectedRoutes = [
     route: '/editor',
     component: <CVEditor />,
     isProtected: false,
+  },
+  {
+    route: '/auth/error',
+    component: <AuthError />,
+  },
+  {
+    route: '/auth/callback',
+    component: <AuthCallback />,
   },
 ];
 

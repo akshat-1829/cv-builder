@@ -21,6 +21,6 @@ const layoutSchema = new Schema<ILayout>(
   { timestamps: true },
 );
 
-layoutSchema.index({ slug: 1 });
+// layoutSchema.index({ slug: 1 });
 
 export const Layout = model<ILayout>('Layout', layoutSchema);

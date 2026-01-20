@@ -1,3 +1,5 @@
+// server/config/passport.config.ts
+
 import passport from 'passport';
 import {
   Strategy as JwtStrategy,
@@ -13,7 +15,8 @@ import {
   Profile as FacebookProfile,
 } from 'passport-facebook';
 import config from './environment.config';
-import { User, IUser } from '../db/models';
+import { User } from '../db/models';
+import * as AuthService from '../service/auth.service';
 
 /**
  * JWT Strategy - Validates JWT tokens in requests
@@ -60,48 +63,23 @@ if (config.oauth.google.clientId && config.oauth.google.clientSecret) {
         done: (error: any, user?: any) => void,
       ) => {
         try {
-          // Check if user exists with Google ID
-          let user = await User.findOne({
-            authProvider: 'google',
-            providerId: profile.id,
+          console.log('🔵 Google OAuth callback received');
+          console.log('Profile:', {
+            id: profile.id,
+            email: profile.emails?.[0]?.value,
+            name: profile.displayName,
           });
 
-          if (user) {
-            return done(null, user);
-          }
-
-          // Check if email exists
-          const existingUser = await User.findOne({
+          const user = await AuthService.findOrCreateOAuthUser('google', {
+            id: profile.id,
             email: profile.emails?.[0]?.value,
-          });
-
-          if (existingUser) {
-            // Link Google to existing account
-            existingUser.authProvider = 'google';
-            existingUser.providerId = profile.id;
-            existingUser.profilePicture = profile.photos?.[0]?.value;
-            existingUser.isEmailVerified = true;
-            await existingUser.save();
-            return done(null, existingUser);
-          }
-
-          // Create new user
-          const username =
-            profile.displayName?.replace(/\s+/g, '_').toLowerCase() ||
-            profile.emails?.[0]?.value.split('@')[0] ||
-            `user_${Date.now()}`;
-
-          user = await User.create({
-            username,
-            email: profile.emails?.[0]?.value,
-            authProvider: 'google',
-            providerId: profile.id,
-            profilePicture: profile.photos?.[0]?.value,
-            isEmailVerified: true,
+            displayName: profile.displayName,
+            photos: profile.photos,
           });
 
           return done(null, user);
         } catch (error) {
+          console.error('❌ Google OAuth error:', error);
           return done(error, undefined);
         }
       },
@@ -131,48 +109,23 @@ if (config.oauth.facebook.appId && config.oauth.facebook.appSecret) {
         done: (error: any, user?: any) => void,
       ) => {
         try {
-          // Check if user exists with Facebook ID
-          let user = await User.findOne({
-            authProvider: 'facebook',
-            providerId: profile.id,
+          console.log('🔵 Facebook OAuth callback received');
+          console.log('Profile:', {
+            id: profile.id,
+            email: profile.emails?.[0]?.value,
+            name: profile.displayName,
           });
 
-          if (user) {
-            return done(null, user);
-          }
-
-          // Check if email exists
-          const existingUser = await User.findOne({
+          const user = await AuthService.findOrCreateOAuthUser('facebook', {
+            id: profile.id,
             email: profile.emails?.[0]?.value,
-          });
-
-          if (existingUser) {
-            // Link Facebook to existing account
-            existingUser.authProvider = 'facebook';
-            existingUser.providerId = profile.id;
-            existingUser.profilePicture = profile.photos?.[0]?.value;
-            existingUser.isEmailVerified = true;
-            await existingUser.save();
-            return done(null, existingUser);
-          }
-
-          // Create new user
-          const username =
-            profile.displayName?.replace(/\s+/g, '_').toLowerCase() ||
-            profile.emails?.[0]?.value?.split('@')[0] ||
-            `user_${Date.now()}`;
-
-          user = await User.create({
-            username,
-            email: profile.emails?.[0]?.value,
-            authProvider: 'facebook',
-            providerId: profile.id,
-            profilePicture: profile.photos?.[0]?.value,
-            isEmailVerified: true,
+            displayName: profile.displayName,
+            photos: profile.photos,
           });
 
           return done(null, user);
         } catch (error) {
+          console.error('❌ Facebook OAuth error:', error);
           return done(error, undefined);
         }
       },

@@ -1,5 +1,3 @@
-// src/components/CVForm/BasicDetailsForm.tsx
-
 import React, { useEffect, useState } from 'react';
 import { useFormikContext } from 'formik';
 import {
@@ -16,17 +14,19 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import { CVData } from '@cv-builder/shared-types';
 import { Button, TextField } from '@cv-builder/ui-theme';
+import { uploadProfileImage } from '../../../../services/cv.service';
+import { config } from '../../../../config/env';
 
 const BasicDetailsForm: React.FC = () => {
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } =
   useFormikContext<CVData>();
 
-  const [imagePreview, setImagePreview] = useState<string>(
-    values.basicDetails.image || '',
-  );
+  // const [imagePreview, setImagePreview] = useState<string>(
+  //   values.basicDetails.image || '',
+  // );
   const [uploadError, setUploadError] = useState<string>('');
   const [uploading, setUploading] = useState(false);
-  
+
   useEffect(() => {
     console.log('=== BasicDetailsForm Render ===');
     console.log('Current values:', values);
@@ -59,31 +59,21 @@ const BasicDetailsForm: React.FC = () => {
     setUploading(true);
 
     try {
-      // Create FormData
-      const formData = new FormData();
-      formData.append('image', file);
+      // Use the uploadProfileImage service function
+      const response = await uploadProfileImage(file);
 
-      // Upload to server
-      const response = await fetch(
-        'http://localhost:5000/api/upload/profile-image',
-        {
-          method: 'POST',
-          body: formData,
-        },
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Upload failed');
+      if (!response.success) {
+        throw new Error(response.error || 'Upload failed');
       }
 
-      const data = await response.json();
-      const imageUrl = `http://localhost:5000${data.imageUrl}`; // Full URL with server
+      // Build full image URL using the configured API base URL
+      // const data = response.data as Record<string, unknown>;
+      // const imageUrl = `${config.apiBaseUrl}${data?.imageUrl}`;
 
-      setImagePreview(imageUrl);
-      setFieldValue('basicDetails.image', imageUrl);
+      // setImagePreview(imageUrl);
+      // setFieldValue('basicDetails.image', imageUrl);
 
-      console.log('Image uploaded successfully:', imageUrl);
+      // console.log('Image uploaded successfully:', imageUrl);
     } catch (error: any) {
       console.error('Upload error:', error);
       setUploadError(
@@ -100,13 +90,17 @@ const BasicDetailsForm: React.FC = () => {
     const currentImage = values.basicDetails.image;
 
     // Remove from server if it's a server-hosted image
-    if (currentImage && currentImage.includes('/uploads/profile-images/')) {
+    if (currentImage && currentImage.includes('/api/uploads/profile-images/')) {
       try {
+        const token = localStorage.getItem('token');
         const response = await fetch(
-          'http://localhost:5000/api/upload/profile-image',
+          `${config.apiBaseUrl}/upload/profile-image`,
           {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token ? `Bearer ${token}` : '',
+            },
             body: JSON.stringify({ imageUrl: currentImage }),
           },
         );
@@ -119,7 +113,7 @@ const BasicDetailsForm: React.FC = () => {
       }
     }
 
-    setImagePreview('');
+    // setImagePreview('');
     setFieldValue('basicDetails.image', '');
     setUploadError('');
   };
@@ -128,7 +122,7 @@ const BasicDetailsForm: React.FC = () => {
     <Box>
       <Grid container spacing={3}>
         {/* Profile Image Upload */}
-        <Grid size={{ xs: 12 }}>
+        {/* <Grid size={{ xs: 12 }}>
           <Box
             sx={{
               display: 'flex',
@@ -257,7 +251,7 @@ const BasicDetailsForm: React.FC = () => {
               </Alert>
             )}
           </Box>
-        </Grid>
+        </Grid> */}
 
         {/* Name Fields */}
         <Grid size={{ xs: 12, md: 6 }}>

@@ -17,7 +17,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useState } from 'react';
 import { useScrollTrigger } from '@mui/material';
 import { AppBarHeader, HeaderToolbar } from '@cv-builder/ui-theme';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../../store/authSore';
 
 const navItems = [
   { label: 'Home', path: '/' },
@@ -26,6 +27,9 @@ const navItems = [
 ];
 
 const AppHeader = () => {
+  const authState = useAuthStore();
+  const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down('md'),
@@ -57,17 +61,23 @@ const AppHeader = () => {
 
   const whiteColor = theme.palette.common.white;
   const transparentText = alpha(whiteColor, 0.9);
-  const transparentSecondary = alpha(whiteColor, 0.8);
+  // const transparentSecondary = alpha(whiteColor, 0.8);
+
+  const logout = () => {
+    authState.logout();
+    navigate('/login');
+  };
 
   return (
-    <AppBarHeader
-      position="static"
-      isScrolled={isScrolled}
-
-    >
+    <AppBarHeader position="static" isScrolled={isScrolled}>
       <HeaderToolbar>
         {/* 1. Logo - Fixed colors */}
-        <Box display="flex" alignItems="center" gap={1.5} sx={{maxWidth:'100vw'}}>
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={1.5}
+          sx={{ maxWidth: '100vw' }}
+        >
           <Box
             sx={{
               width: 32,
@@ -106,33 +116,45 @@ const AppHeader = () => {
         {/* 2. Menu items */}
         {!isMobile && (
           <Box display="flex" alignItems="center" gap={1.5}>
-            {navItems.map((item) => (
-              <Box
-                key={item.path}
-                component={Link}
-                to={item.path}
-                sx={{
-                  p: 1.5,
-                  borderRadius: 2,
-                  textDecoration: 'none',
-                  textTransform: 'none',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: isScrolled ? 'text.primary' : whiteColor,
-                  fontWeight: 500,
-                  fontSize: '0.95rem',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    backgroundColor: isScrolled
-                      ? theme.palette.action.hover
-                      : alpha(whiteColor, 0.2),
-                  },
-                }}
-              >
-                {item.label}
-              </Box>
-            ))}
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Box
+                  key={item.path}
+                  component={Link}
+                  to={item.path}
+                  sx={{
+                    p: 1.5,
+                    borderRadius: 2,
+                    textDecoration: 'none',
+                    textTransform: 'none',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: isScrolled ? 'text.primary' : whiteColor,
+                    fontWeight: isActive ? 600 : 500,
+                    fontSize: '0.95rem',
+                    transition: 'all 0.3s ease',
+                    backgroundColor: isActive
+                      ? isScrolled
+                        ? theme.palette.primary.main
+                        : alpha(theme.palette.primary.main, 0.2)
+                      : 'transparent',
+                    '&:hover': {
+                      backgroundColor: isActive
+                        ? isScrolled
+                          ? theme.palette.primary.main
+                          : alpha(theme.palette.primary.main, 0.2)
+                        : isScrolled
+                        ? theme.palette.action.hover
+                        : alpha(whiteColor, 0.2),
+                    },
+                  }}
+                >
+                  {item.label}
+                </Box>
+              );
+            })}
           </Box>
         )}
 
@@ -154,27 +176,31 @@ const AppHeader = () => {
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                 transformOrigin={{ vertical: 'top', horizontal: 'left' }}
               >
-                {navItems.map((item) => (
-                  <MenuItem key={item.path}>
-                    <Box
-                      component={Link}
-                      to={item.path}
-                      sx={{
-                        bgcolor: 'common.white',
-                        color: 'text.primary',
-                        borderRadius: 2,
-                        // fontWeight: 600,
-                        textDecoration: 'none',
-                        display: 'inline-block',
-                        '&:hover': {
-                          bgcolor: 'background.default',
-                        },
-                      }}
-                    >
-                      {item.label}
-                    </Box>
-                  </MenuItem>
-                ))}
+                {navItems.map((item) => {
+                  const isActive = location.pathname === item.path;
+                  return (
+                    <MenuItem key={item.path}>
+                      <Box
+                        component={Link}
+                        to={item.path}
+                        sx={{
+                          bgcolor: 'common.white',
+                          color: 'text.primary',
+                          borderRadius: 2,
+                          textDecoration: 'none',
+                          display: 'inline-block',
+                          fontWeight: isActive ? 600 : 400,
+                          backgroundColor: isActive ? theme.palette.action.selected : 'transparent',
+                          '&:hover': {
+                            bgcolor: 'background.default',
+                          },
+                        }}
+                      >
+                        {item.label}
+                      </Box>
+                    </MenuItem>
+                  );
+                })}
               </Menu>
             </>
           )}
@@ -228,7 +254,7 @@ const AppHeader = () => {
                     transition: 'color 0.3s ease',
                   }}
                 >
-                  John Doe
+                  {authState?.user?.username || 'John Doe'}
                 </Typography>
                 {/* <Typography
                   variant="caption"
@@ -256,13 +282,20 @@ const AppHeader = () => {
             onClose={handleCloseUserMenu}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            sx={{width:'100%'}}
+            sx={{ width: '100%' }}
           >
             {/* <MenuItem>Profile</MenuItem> */}
             {/* <MenuItem>Billing</MenuItem> */}
             {/* <Divider /> */}
-            <MenuItem>
-              <Box
+            <MenuItem onClick={logout}>
+              <Typography
+                variant="body2"
+                textAlign="center"
+                sx={{ width: '100%' }}
+              >
+                Logout
+              </Typography>
+              {/* <Box
                 component={Link}
                 to="/login"
                 sx={{
@@ -278,7 +311,7 @@ const AppHeader = () => {
                 }}
               >
                 Logout
-              </Box>
+              </Typography> */}
             </MenuItem>
           </Menu>
         </Box>

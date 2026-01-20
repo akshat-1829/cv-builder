@@ -62,8 +62,11 @@ export const login = async (
     const { email, password } = req.body;
 
     // Find user and include password field
-    const user = await AuthService.findUserByEmail(email);
+    const user =
+    (await AuthService.findUserByEmail(email)) ||
+    (await AuthService.findUserByUsername(email));
 
+    console.log('user: ', user);
     if (!user) {
       ResponseHandler.unauthorized(res, 'Invalid email or password');
       return;
@@ -195,21 +198,35 @@ export const updateProfile = async (
   }
 };
 
-/**
- * Google OAuth callback handler
- * GET /api/auth/google/callback
- */
-export const googleCallback = (req: Request, res: Response): void => {
-  // User is authenticated by passport
-  if (req.user) {
-    // const response = generateAuthResponse(req.user);
+export const googleCallback = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    if (!req.user) {
+      console.error('❌ No user found in Google callback');
+      const errorUrl = `${config.client.url}/auth/callback?message=${encodeURIComponent('Google authentication failed')}`;
+      res.redirect(errorUrl);
+      return;
+    }
 
-    // Redirect to frontend with token
-    // res.redirect(`${config.client.url}/auth/callback?token=${response.token}`);
-  } else {
-    res.redirect(
-      `${config.client.url}/auth/error?message=Authentication failed`,
-    );
+    const user = req.user as any;
+    console.log('✅ Google user authenticated:', user.email);
+
+    // Generate JWT token
+    const response = generateAuthResponse(user);
+
+    console.log('✅ Token generated for Google user');
+
+    // Redirect to frontend callback page with token
+    const redirectUrl = `${config.client.url}/auth/callback?token=${response.token}&provider=google`;
+
+    console.log('🔗 Redirecting to:', redirectUrl);
+    res.redirect(redirectUrl);
+  } catch (error) {
+    console.error('❌ Google callback error:', error);
+    const errorUrl = `${config.client.url}/auth/callback?message=${encodeURIComponent('Authentication error')}`;
+    res.redirect(errorUrl);
   }
 };
 
@@ -217,19 +234,38 @@ export const googleCallback = (req: Request, res: Response): void => {
  * Facebook OAuth callback handler
  * GET /api/auth/facebook/callback
  */
-export const facebookCallback = (req: Request, res: Response): void => {
-  // User is authenticated by passport
-  if (req.user) {
-    // const response = generateAuthResponse(req.user);
+export const facebookCallback = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    if (!req.user) {
+      console.error('❌ No user found in Facebook callback');
+      const errorUrl = `${config.client.url}/auth/callback?message=${encodeURIComponent('Facebook authentication failed')}`;
+      res.redirect(errorUrl);
+      return;
+    }
 
-    // Redirect to frontend with token
-    // res.redirect(`${config.client.url}/auth/callback?token=${response.token}`);
-  } else {
-    res.redirect(
-      `${config.client.url}/auth/error?message=Authentication failed`,
-    );
+    const user = req.user as any;
+    console.log('✅ Facebook user authenticated:', user.email);
+
+    // Generate JWT token
+    const response = generateAuthResponse(user);
+
+    console.log('✅ Token generated for Facebook user');
+
+    // Redirect to frontend callback page with token
+    const redirectUrl = `${config.client.url}/auth/callback?token=${response.token}&provider=facebook`;
+
+    console.log('🔗 Redirecting to:', redirectUrl);
+    res.redirect(redirectUrl);
+  } catch (error) {
+    console.error('❌ Facebook callback error:', error);
+    const errorUrl = `${config.client.url}/auth/callback?message=${encodeURIComponent('Authentication error')}`;
+    res.redirect(errorUrl);
   }
 };
+
 
 /**
  * Logout user (optional - mainly for client-side token removal)

@@ -5,11 +5,13 @@ import { Box, TextField, Typography, Alert } from '@mui/material';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { CommonDialog, DialogAction } from '@cv-builder/ui-theme';
+
 interface DeleteConfirmDialogProps {
   open: boolean;
   cvTitle: string;
   onClose: () => void;
-  onConfirm: () => Promise<void>;
+  onConfirm: () => void;
+  isDeleting?: boolean;
 }
 
 export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
@@ -17,18 +19,13 @@ export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
   cvTitle,
   onClose,
   onConfirm,
+  isDeleting = false,
 }) => {
   const [confirmText, setConfirmText] = useState('');
-  const [deleting, setDeleting] = useState(false);
 
-  const handleConfirm = async () => {
-    setDeleting(true);
-    try {
-      await onConfirm();
-    } finally {
-      setDeleting(false);
-      setConfirmText('');
-    }
+  const handleConfirm = () => {
+    onConfirm();
+    setConfirmText('');
   };
 
   const isConfirmed = confirmText.toUpperCase() === 'DELETE';
@@ -38,15 +35,15 @@ export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
       label: 'Cancel',
       onClick: onClose,
       variant: 'outlined',
-      disabled: deleting,
+      disabled: isDeleting,
     },
     {
       label: 'Delete Permanently',
       onClick: handleConfirm,
       variant: 'contained',
       color: 'error',
-      disabled: !isConfirmed,
-      loading: deleting,
+      disabled: !isConfirmed || isDeleting,
+      loading: isDeleting,
       startIcon: <DeleteForeverIcon />,
     },
   ];
@@ -61,7 +58,7 @@ export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
       actions={actions}
       maxWidth="sm"
       warning="This action cannot be undone!"
-      disableBackdropClick={deleting}
+      disableBackdropClick={isDeleting}
     >
       <Typography variant="body1" gutterBottom sx={{ mb: 2 }}>
         Are you sure you want to permanently delete:
@@ -116,7 +113,7 @@ export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
           placeholder="DELETE"
           value={confirmText}
           onChange={(e) => setConfirmText(e.target.value)}
-          disabled={deleting}
+          disabled={isDeleting}
           autoFocus
           sx={{ mt: 1 }}
         />

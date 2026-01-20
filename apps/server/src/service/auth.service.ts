@@ -1,32 +1,61 @@
+// server/service/auth.service.ts
+
 import { User, IUser } from '../db/models';
-import bcrypt from 'bcryptjs';
+import { UpdateQuery, QueryOptions } from 'mongoose';
+
+export interface CreateUserDTO {
+  username: string;
+  email: string;
+  password?: string;
+  contactNumber?: string;
+  authProvider: 'local' | 'google' | 'facebook';
+  providerId?: string;
+  profilePicture?: string;
+  isEmailVerified?: boolean;
+}
 
 /**
  * Find user by email
  */
 export const findUserByEmail = async (email: string): Promise<IUser | null> => {
-  return User.findOne({ email }).select('+password');
+  return await User.findOne({ email }).select('+password');
 };
 
 /**
  * Find user by username
  */
-export const findUserByUsername = async (username: string): Promise<IUser | null> => {
-  return User.findOne({ username });
+export const findUserByUsername = async (
+  username: string,
+): Promise<IUser | null> => {
+  return await User.findOne({ username }).select('+password');
 };
 
 /**
  * Find user by ID
  */
 export const findUserById = async (id: string): Promise<IUser | null> => {
-  return User.findById(id);
+  return await User.findById(id);
+};
+
+/**
+ * Find user by OAuth provider and provider ID
+ */
+export const findUserByProvider = async (
+  provider: 'google' | 'facebook',
+  providerId: string,
+): Promise<IUser | null> => {
+  return await User.findOne({
+    authProvider: provider,
+    providerId: providerId,
+  });
 };
 
 /**
  * Create new user
  */
-export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
-  return User.create(userData);
+export const createUser = async (userData: CreateUserDTO): Promise<IUser> => {
+  const user = await User.create(userData);
+  return user;
 };
 
 /**
@@ -34,35 +63,113 @@ export const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
  */
 export const updateUserById = async (
   id: string,
-  updateData: Partial<IUser>,
-  options: { new?: boolean; runValidators?: boolean } = {},
+  updateData: UpdateQuery<IUser>,
+  options?: QueryOptions,
 ): Promise<IUser | null> => {
-  return User.findByIdAndUpdate(id, updateData, options);
+  return await User.findByIdAndUpdate(id, updateData, options);
 };
 
 /**
- * Find user by OAuth provider and ID
+ * Link OAuth provider to existing user
  */
-export const findUserByProvider = async (
-  provider: string,
+export const linkOAuthProvider = async (
+  userId: string,
+  provider: 'google' | 'facebook',
   providerId: string,
+  profilePicture?: string,
 ): Promise<IUser | null> => {
-  return User.findOne({ authProvider: provider, providerId });
+  return await User.findByIdAndUpdate(
+    userId,
+    {
+      authProvider: provider,
+      providerId: providerId,
+      ...(profilePicture && { profilePicture }),
+      isEmailVerified: true,
+    },
+    { new: true },
+  );
 };
 
 /**
- * Find user by email (for OAuth linking)
+ * Find or create user from OAuth profile
  */
-export const findUserByEmailForOAuth = async (email: string): Promise<IUser | null> => {
-  return User.findOne({ email });
-};
+export const findOrCreateOAuthUser = async (
+  provider: 'google' | 'facebook',
+  profile: {
+    id: string;
+    email?: string;
+    displayName?: string;
+    photos?: Array<{ value: string }>;
+  },
+): Promise<IUser> => {
+  try {
+    // 1. Check if user exists with this provider ID
+    let user = await findUserByProvider(provider, profile.id);
 
-/**
- * Update user (for OAuth linking)
- */
-export const updateUserForOAuth = async (
-  id: string,
-  updateData: Partial<IUser>,
-): Promise<IUser | null> => {
-  return User.findByIdAndUpdate(id, updateData, { new: true });
+    if (user) {
+      console.log(`✅ Found existing ${provider} user:`, user.email);
+      return user;
+    }
+
+    // 2. Check if email exists with any account
+    if (profile.email) {
+      const existingUser = await findUserByEmail(profile.email);
+
+      if (existingUser) {
+        console.log(
+          `✅ Linking ${provider} to existing user:`,
+          existingUser.email,
+        );
+
+        // Link OAuth provider to existing account
+        const updatedUser = await linkOAuthProvider(
+          existingUser._id.toString(),
+          provider,
+          profile.id,
+          profile.photos?.[0]?.value,
+        );
+
+        if (updatedUser) {
+          return updatedUser;
+        }
+      }
+    }
+
+    // 3. Create new user
+    console.log(`✅ Creating new ${provider} user:`, profile.email);
+
+    // Generate unique username
+    let username =
+      profile.displayName
+        ?.replace(/\s+/g, '_')
+        .toLowerCase()
+        .replace(/[^a-z0-9_]/g, '') ||
+      profile.email?.split('@')[0] ||
+      `user_${Date.now()}`;
+
+    // Ensure username is unique
+    let usernameExists = await findUserByUsername(username);
+    let counter = 1;
+
+    while (usernameExists) {
+      username = `${username}${counter}`;
+      usernameExists = await findUserByUsername(username);
+      counter++;
+    }
+
+    user = await createUser({
+      username,
+      email: profile.email || `${profile.id}@${provider}.com`,
+      authProvider: provider,
+      providerId: profile.id,
+      profilePicture: profile.photos?.[0]?.value,
+      isEmailVerified: true,
+    });
+
+    console.log(`✅ Created new ${provider} user:`, user.email);
+    return user;
+  } catch (error) {
+    console.error(`❌ Error in findOrCreateOAuthUser:`, error);
+    throw error;
+  }
 };

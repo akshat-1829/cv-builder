@@ -6,10 +6,22 @@ import {
 } from '@mui/material';
 import LoginImageSection from './LoginImageSection';
 import LoginSignupFormSection from './LoginSignupFormSection';
+import { useAuthStore } from '../../store/authSore';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const LoginContainer: React.FC = () => {
+  const authState = useAuthStore();
+  const navigate = useNavigate();
   const theme = useTheme();
 
+  useEffect(() => {
+    if (authState?.isAuthenticated) {
+      navigate('/', {
+        replace: true,
+      });
+    }
+  }, [authState?.isAuthenticated, navigate]);
   return (
     <Box
       sx={{

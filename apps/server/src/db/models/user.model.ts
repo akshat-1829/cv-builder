@@ -41,7 +41,7 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       minlength: [6, 'Password must be at least 6 characters'],
-      select: false,
+      // select: false,
     },
     authProvider: {
       type: String,
@@ -67,11 +67,11 @@ const userSchema = new Schema<IUser>(
 
 // Indexes
 userSchema.index(
-  { authProvider: 1, providerId: 1 },
+  { providerId: 1 },
   { unique: true, sparse: true },
 );
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
+// userSchema.index({ email: 1 });
+// userSchema.index({ username: 1 });
 
 // Hash password before saving
 userSchema.pre('save', async function () {

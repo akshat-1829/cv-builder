@@ -1,115 +1,81 @@
 // src/components/Dashboard/MyCVs.tsx
 
-import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Grid,
-  Typography,
-  CircularProgress,
-  Alert,
-  Container,
-  Paper,
-  Snackbar,
-  Stack,
-} from '@mui/material';
+import React, { useCallback, useMemo } from 'react';
+import { Box, Grid, Typography, Container, Stack } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@cv-builder/ui-theme';
 import CVCard from './CvCard';
-import { DeleteConfirmDialog, PaymentDialog } from '../../Common';
+import { DeleteConfirmDialog, PaymentDialog, ErrorAlert, SnackbarNotification, LoadingState, EmptyState } from '../../Common';
+import { useSnackbar, useDialog } from '../../../hooks';
+import {
+  useGetAllCvs,
+  useDeleteCv,
+  downloadCv,
+} from '../../../services/cv.service';
 
 interface CV {
-  id: string;
+  _id?: string;
+  id?: string;
   title: string;
-  templateId: string;
-  previewUrl: string;
+  templateId?: string;
+  layout?: string;
+  previewUrl?: string;
   createdAt: string;
   updatedAt: string;
+  isPublic?: boolean;
 }
 
 type PaymentAction = 'share' | 'download' | null;
 
 const MyCVs: React.FC = () => {
   const navigate = useNavigate();
-  const [cvs, setCvs] = useState<CV[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>('');
 
-  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
-  const [paymentAction, setPaymentAction] = useState<PaymentAction>(null);
-  const [selectedCVId, setSelectedCVId] = useState<string | null>(null);
+  // Use React Query hooks for fetching and deleting CVs
+  const { data: cvData, isLoading, error: queryError, refetch } = useGetAllCvs();
+  console.log('cvData: ', cvData?.data);
+  const deleteMutation = useDeleteCv();
 
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deletingCVId, setDeletingCVId] = useState<string | null>(null);
+  // Custom hooks for state management
+  const { snackbar, closeSnackbar, showSuccess, showError } = useSnackbar();
+  const paymentDialog = useDialog();
+  const deleteDialog = useDialog();
 
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success' as 'success' | 'error',
-  });
+  // Type-safe error handling
+  const error = queryError as Error | null;
+  const cvs: CV[] = useMemo(() => Array.isArray(cvData?.data?.data) ? cvData.data?.data : [], [cvData?.data?.data]);
 
-  useEffect(() => {
-    // fetchMyCVs();
-    setLoading(false);
-  }, []);
+  // Dialog state extracted to custom hook
+  const paymentAction: PaymentAction = (paymentDialog.data as unknown as Record<string, unknown>)?.paymentAction as PaymentAction || null;
+  const selectedCVId = (paymentDialog.data as unknown as Record<string, unknown>)?.selectedCVId as string || null;
+  const deletingCVId = (deleteDialog.data as unknown as Record<string, unknown>)?.deletingCVId as string || null;
 
-  const fetchMyCVs = async () => {
-    try {
-      setLoading(true);
-      setError('');
+  const getCVId = useCallback((cv: CV) => cv._id || cv.id || '', []);
 
-      const response = await fetch('/api/cv/my-cvs', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+  const handleEdit = useCallback((cvId: string, templateId?: string) => {
+    navigate(
+      `/editor?template=${templateId || 'template_1'}&cvId=${cvId}`,
+    );
+  }, [navigate]);
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch CVs');
-      }
+  const handleShare = useCallback((cvId: string) => {
+    paymentDialog.openDialog({ paymentAction: 'share', selectedCVId: cvId });
+  }, [paymentDialog]);
 
-      const data = await response.json();
-      setCvs(data.cvs);
-    } catch (err: any) {
-      console.error('Error fetching CVs:', err);
-      setError(err.message || 'Failed to load your CVs');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleDownload = useCallback((cvId: string) => {
+    paymentDialog.openDialog({ paymentAction: 'download', selectedCVId: cvId });
+  }, [paymentDialog]);
 
-  const handleEdit = (cvId: string, templateId: string) => {
-    navigate(`/editor?template=${templateId}&cvId=${cvId}`);
-  };
+  const handleDelete = useCallback((cvId: string) => {
+    deleteDialog.openDialog({ deletingCVId: cvId });
+  }, [deleteDialog]);
 
-  const handleShare = (cvId: string) => {
-    setSelectedCVId(cvId);
-    setPaymentAction('share');
-    setPaymentDialogOpen(true);
-  };
-
-  const handleDownload = (cvId: string) => {
-    setSelectedCVId(cvId);
-    setPaymentAction('download');
-    setPaymentDialogOpen(true);
-  };
-
-  const handleDelete = (cvId: string) => {
-    setDeletingCVId(cvId);
-    setDeleteDialogOpen(true);
-  };
-
-  const handlePaymentSuccess = async () => {
+  const handlePaymentSuccess = useCallback(async () => {
     if (!selectedCVId || !paymentAction) return;
 
     try {
       if (paymentAction === 'download') {
-        const response = await fetch(`/api/cv/${selectedCVId}/download`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
+        const response = await downloadCv(selectedCVId);
 
         if (response.ok) {
           const blob = await response.blob();
@@ -119,11 +85,9 @@ const MyCVs: React.FC = () => {
           a.download = `CV-${selectedCVId}.pdf`;
           a.click();
           window.URL.revokeObjectURL(url);
-          setSnackbar({
-            open: true,
-            message: 'CV downloaded successfully!',
-            severity: 'success',
-          });
+          showSuccess('CV downloaded successfully!');
+        } else {
+          throw new Error('Failed to download CV');
         }
       } else if (paymentAction === 'share') {
         const shareUrl = `${window.location.origin}/cv/preview/${selectedCVId}`;
@@ -136,77 +100,45 @@ const MyCVs: React.FC = () => {
           });
         } else {
           await navigator.clipboard.writeText(shareUrl);
-          setSnackbar({
-            open: true,
-            message: 'Share link copied to clipboard!',
-            severity: 'success',
-          });
+          showSuccess('Share link copied to clipboard!');
         }
       }
 
-      setPaymentDialogOpen(false);
-      setSelectedCVId(null);
-      setPaymentAction(null);
-    } catch (error) {
+      paymentDialog.closeDialog();
+    } catch (error: unknown) {
       console.error('Error processing action:', error);
-      setSnackbar({
-        open: true,
-        message: 'Failed to complete action. Please try again.',
-        severity: 'error',
-      });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to complete action. Please try again.';
+      showError(errorMessage);
     }
-  };
+  }, [selectedCVId, paymentAction, showSuccess, showError, paymentDialog]);
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = useCallback(() => {
     if (!deletingCVId) return;
 
-    try {
-      const response = await fetch(`/api/cv/${deletingCVId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+    deleteMutation.mutate(deletingCVId, {
+      onSuccess: () => {
+        deleteDialog.closeDialog();
+        showSuccess('CV deleted successfully!');
+      },
+      onError: (error: unknown) => {
+        console.error('Error deleting CV:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to delete CV. Please try again.';
+        showError(errorMessage);
+      },
+    });
+  }, [deletingCVId, deleteMutation, deleteDialog, showSuccess, showError]);
 
-      if (response.ok) {
-        setCvs(cvs.filter((cv) => cv.id !== deletingCVId));
-        setDeleteDialogOpen(false);
-        setDeletingCVId(null);
-        setSnackbar({
-          open: true,
-          message: 'CV deleted successfully!',
-          severity: 'success',
-        });
-      } else {
-        throw new Error('Failed to delete CV');
-      }
-    } catch (error) {
-      console.error('Error deleting CV:', error);
-      setSnackbar({
-        open: true,
-        message: 'Failed to delete CV. Please try again.',
-        severity: 'error',
-      });
-    }
-  };
-
-  const handleCreateNew = () => {
+  const handleCreateNew = useCallback(() => {
     navigate('/explore-cvs');
-  };
+  }, [navigate]);
 
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '60vh',
-        }}
-      >
-        <CircularProgress size={60} />
-      </Box>
-    );
+  const handleRetry = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
+  // Render loading state
+  if (isLoading) {
+    return <LoadingState loading={true}><div /></LoadingState>;
   }
 
   return (
@@ -256,85 +188,74 @@ const MyCVs: React.FC = () => {
       </Stack>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError('')}>
-          {error}
-        </Alert>
+        <ErrorAlert
+          message={error instanceof Error
+            ? error.message
+            : 'Failed to load your CVs. Please try again.'}
+          onClose={handleRetry}
+          onRetry={handleRetry}
+          showRetry={true}
+        />
       )}
 
       {cvs.length === 0 ? (
-        <Paper
-          elevation={0}
-          sx={{
-            textAlign: 'center',
-            py: 8,
-            px: 2,
-            bgcolor: 'background.paper',
-          }}
-        >
-          <Typography variant="h5" color="text.secondary" gutterBottom>
-            No CVs created yet
-          </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-            Start building your professional CV with our beautiful templates
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleCreateNew}
-            size="large"
-          >
-            Create Your First CV
-          </Button>
-        </Paper>
+        <EmptyState
+          title="No CVs created yet"
+          description="Start building your professional CV with our beautiful templates"
+          actionLabel="Create Your First CV"
+          onAction={handleCreateNew}
+        />
       ) : (
         <Grid container spacing={3}>
           {cvs.map((cv) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={cv.id}>
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={getCVId(cv)}>
               <CVCard
-                cv={cv}
-                onEdit={() => handleEdit(cv.id, cv.templateId)}
-                onShare={() => handleShare(cv.id)}
-                onDownload={() => handleDownload(cv.id)}
-                onDelete={() => handleDelete(cv.id)}
+                cv={{
+                  id: getCVId(cv),
+                  title: cv.title,
+                  templateId: cv.layout || 'temp_1',
+                  previewUrl: cv.previewUrl || '',
+                  createdAt: cv.createdAt,
+                  updatedAt: cv.updatedAt,
+                }}
+                onEdit={() =>
+                  handleEdit(getCVId(cv), cv.layout)
+                }
+                onShare={() => handleShare(getCVId(cv))}
+                onDownload={() => handleDownload(getCVId(cv))}
+                onDelete={() => handleDelete(getCVId(cv))}
               />
             </Grid>
           ))}
         </Grid>
       )}
 
+      {/* Dialogs */}
       <PaymentDialog
-        open={paymentDialogOpen}
+        open={paymentDialog.open}
         action={paymentAction}
-        onClose={() => {
-          setPaymentDialogOpen(false);
-          setSelectedCVId(null);
-          setPaymentAction(null);
-        }}
+        onClose={paymentDialog.closeDialog}
         onSuccess={handlePaymentSuccess}
       />
 
-      <DeleteConfirmDialog
-        open={deleteDialogOpen}
-        cvTitle={cvs.find((cv) => cv.id === deletingCVId)?.title || ''}
-        onClose={() => {
-          setDeleteDialogOpen(false);
-          setDeletingCVId(null);
-        }}
-        onConfirm={handleDeleteConfirm}
-      />
+      {deletingCVId && (
+        <DeleteConfirmDialog
+          open={deleteDialog.open}
+          cvTitle={cvs.find((cv) => getCVId(cv) === deletingCVId)?.title || 'CV'}
+          onClose={deleteDialog.closeDialog}
+          onConfirm={handleDeleteConfirm}
+          isDeleting={deleteMutation.isLoading}
+        />
+      )}
 
-      <Snackbar
+      <SnackbarNotification
         open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={closeSnackbar}
+      />
     </Container>
   );
 };
 
-export default MyCVs;
+export default React.memo(MyCVs);

@@ -1,10 +1,11 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { useAuthStore } from '../store/authSore';
+import { config } from '../config/env';
 
 // Create axios instance with base configuration
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api',
+  baseURL: config.apiBaseUrl || 'http://localhost:5000/api',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
@@ -65,7 +66,7 @@ export const sendRequest = async <T = any>({
   data,
   params,
   headers,
-  showSuccessToast = false,
+  showSuccessToast = true,
   successMessage,
   showErrorToast = true,
   customErrorHandler,
@@ -80,6 +81,7 @@ export const sendRequest = async <T = any>({
     };
 
     const response: AxiosResponse<T> = await apiClient(config);
+    console.log('response: ', response);
 
     // Handle success toast
     if (showSuccessToast && successMessage) {
@@ -106,6 +108,64 @@ export const sendRequest = async <T = any>({
         axiosError.response?.data?.error ||
         axiosError.message ||
         'Something went wrong. Please try again.';
+
+      toast.error(errorMessage);
+    }
+
+    return {
+      success: false,
+      error: axiosError.response?.data?.message || axiosError.message,
+    };
+  }
+};
+
+/**
+ * Upload file to the server
+ * Automatically handles FormData and removes Content-Type header for proper multipart/form-data
+ */
+export const uploadFile = async (
+  url: string,
+  formData: FormData,
+  options?: {
+    showSuccessToast?: boolean;
+    successMessage?: string;
+    showErrorToast?: boolean;
+  }
+): Promise<ApiResponse> => {
+  try {
+    const token = useAuthStore.getState().token;
+    const config: AxiosRequestConfig = {
+      url,
+      method: 'POST',
+      data: formData,
+      headers: {
+        // Don't set Content-Type, let axios/browser set it for multipart/form-data
+        'Authorization': token ? `Bearer ${token}` : '',
+      },
+    };
+
+    const response: AxiosResponse = await apiClient(config);
+
+    if (options?.showSuccessToast && options?.successMessage) {
+      toast.success(options.successMessage);
+    }
+
+    return {
+      success: true,
+      data: response.data,
+    };
+  } catch (error) {
+    const axiosError = error as AxiosError<{
+      message?: string;
+      error?: string;
+    }>;
+
+    if (options?.showErrorToast !== false) {
+      const errorMessage =
+        axiosError.response?.data?.message ||
+        axiosError.response?.data?.error ||
+        axiosError.message ||
+        'File upload failed. Please try again.';
 
       toast.error(errorMessage);
     }

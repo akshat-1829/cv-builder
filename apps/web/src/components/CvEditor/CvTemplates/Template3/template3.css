@@ -1,0 +1,242 @@
+/* Template 3 Specific Styles - All prefixed with template3- */
+
+.template3-wrapper {
+  font-family: "Calibri", Arial, sans-serif;
+  background: white;
+  line-height: 1.5;
+  padding: 50px 60px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.template3-container {
+  width: 100%;
+  background: white;
+}
+
+.template3-header {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #333;
+}
+
+.template3-name {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  color: #1a1a1a !important;
+  margin-bottom: 8px !important;
+  letter-spacing: 0.5px !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 12px;
+  color: #333;
+  flex-wrap: wrap;
+}
+
+.template3-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-section {
+  margin-bottom: 25px;
+}
+
+.template3-section-title {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #1a1a1a !important;
+  margin-bottom: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  border-bottom: 1px solid #333 !important;
+  padding-bottom: 5px !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-summary-content {
+  font-size: 11.5px !important;
+  line-height: 1.6 !important;
+  color: #333 !important;
+  text-align: justify !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-summary-content p {
+  font-size: 11.5px !important;
+  line-height: 1.6 !important;
+  color: #333 !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-experience-item,
+.template3-project-item,
+.template3-education-item {
+  margin-bottom: 20px;
+}
+
+.template3-experience-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.template3-company-info {
+  flex: 1;
+}
+
+.template3-company-name {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #1a1a1a !important;
+  margin-bottom: 2px !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-job-title {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  font-style: italic !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-location-date {
+  text-align: right;
+  font-size: 11px;
+  color: #555;
+}
+
+.template3-location {
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  color: #555 !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-date-range {
+  font-style: italic !important;
+  font-size: 11px !important;
+  color: #555 !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-project-header {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #1a1a1a !important;
+  margin-bottom: 5px !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-project-meta {
+  font-size: 11px !important;
+  color: #666 !important;
+  margin-bottom: 5px !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-project-desc {
+  font-size: 11px !important;
+  line-height: 1.6 !important;
+  color: #333 !important;
+  text-align: justify !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+  margin-top: 5px !important;
+}
+
+.template3-education-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 5px;
+}
+
+.template3-university-name {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #1a1a1a !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-degree {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-edu-info {
+  text-align: right;
+}
+
+.template3-cgpa {
+  font-size: 11px !important;
+  color: #555 !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-skills-content {
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.template3-skill-category {
+  margin-bottom: 10px;
+}
+
+.template3-skill-label {
+  font-weight: 700 !important;
+  color: #1a1a1a !important;
+  font-size: 11px !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-skill-list {
+  color: #333 !important;
+  font-size: 11px !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+.template3-empty-state {
+  color: #999 !important;
+  font-style: italic !important;
+  text-align: center !important;
+  padding: 10px !important;
+  font-size: 11px !important;
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
+@media print {
+  .template3-wrapper {
+    background: white;
+    padding: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .template3-wrapper {
+    padding: 30px 20px;
+  }
+
+  .template3-experience-header,
+  .template3-education-header {
+    flex-direction: column;
+  }
+
+  .template3-location-date,
+  .template3-edu-info {
+    text-align: left;
+    margin-top: 5px;
+  }
+}
